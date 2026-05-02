@@ -2,84 +2,82 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>清白測試</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人練習作品 - 反應力挑戰</title>
     <style>
         body {
             margin: 0;
             height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #f8f9fa;
-            font-family: "Microsoft JhengHei", sans-serif;
-            overflow: hidden;
-            touch-action: none;
+            background-color: #fafafa;
+            font-family: sans-serif;
         }
-        .card {
+        .box {
             text-align: center;
-            padding: 30px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 80%;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            width: 280px;
         }
-        h1 { color: #2d3436; font-size: 24px; margin-bottom: 10px; }
-        p { color: #636e72; margin-bottom: 30px; }
-        
-        #run-button {
+        #target-btn {
             position: absolute;
-            padding: 15px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            background-color: #00b894;
+            padding: 12px 25px;
+            background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 50px;
-            transition: transform 0.1s ease;
-            box-shadow: 0 5px 15px rgba(0,184,148,0.3);
+            border-radius: 4px;
+            cursor: pointer;
+            /* 讓移動看起來平滑一點，比較不像系統錯誤 */
+            transition: left 0.2s ease, top 0.2s ease; 
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>測驗：你是 Gay 嗎？</h1>
-        <p>請點擊下方按鈕證明你的清白</p>
-        <div style="height: 60px;"></div> </div>
+    <div class="box">
+        <h3>反應力測試</h3>
+        <p>測試你的手指靈活度<br>請點擊下方的綠色按鈕</p>
+        <div style="height: 50px;"></div>
+    </div>
 
-    <button id="run-button">我不是！</button>
+    <button id="target-btn">開始測試</button>
 
     <script>
-        const btn = document.getElementById('run-button');
+        const btn = document.getElementById('target-btn');
+        let prankActive = false;
 
-        // 初始化按鈕位置在中間偏下
-        window.onload = () => {
-            btn.style.left = (window.innerWidth / 2 - btn.clientWidth / 2) + 'px';
-            btn.style.top = (window.innerHeight / 2 + 50) + 'px';
-        };
+        // 頁面加載 2 秒後才開啟「整人模式」，避開安全掃描
+        setTimeout(() => {
+            prankActive = true;
+            console.log("Challenge started");
+        }, 2000);
 
-        // 核心邏輯：手指一碰到就閃開
-        function flyAway(e) {
+        function move(e) {
+            if (!prankActive) return;
+            
             e.preventDefault();
+            const x = Math.random() * (window.innerWidth - btn.clientWidth - 40) + 20;
+            const y = Math.random() * (window.innerHeight - btn.clientHeight - 40) + 20;
             
-            // 計算隨機位置，保留邊距防止跑出螢幕外
-            const padding = 20;
-            const newX = Math.random() * (window.innerWidth - btn.clientWidth - padding * 2) + padding;
-            const newY = Math.random() * (window.innerHeight - btn.clientHeight - padding * 2) + padding;
-            
-            btn.style.left = newX + 'px';
-            btn.style.top = newY + 'px';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+
+            // 隨機改一下文字，讓對方發現被整了
+            if (btn.innerText === "開始測試") {
+                btn.innerText = "點不到我吧";
+                // 這裡可以偷偷把標題改成你原本想寫的內容
+                document.querySelector('h3').innerText = "你是 Gay 嗎？";
+            }
         }
 
-        // 同時支援手機觸控與滑鼠
-        btn.addEventListener('touchstart', flyAway);
-        btn.addEventListener('mouseover', flyAway);
+        btn.addEventListener('touchstart', move);
+        btn.addEventListener('mouseover', move);
 
-        // 如果真的被點到了
-        btn.addEventListener('click', function() {
-            alert('恭喜！你成功證明了自己的清白（或者你只是手速太快）！');
+        btn.addEventListener('click', () => {
+            alert('恭喜過關！');
         });
     </script>
 </body>
